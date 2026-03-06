@@ -1,17 +1,19 @@
-// Use Case-02: Room Search & Availability Check
-// Display available room types
-// Allow guests to check the pricing and amenities
-// Provides the availability status
+// Use Case-03: Booking Request (First-Come-First-Served)
+// Accept booking requests
+// Enforce arrival order and give a gap of 2500ms between each booking
 // @author Developer
-// @version 2.0
+// @version 3.0
 package com.seveneleven.bookmystay.main;
 import java.util.*;
+
+import com.seveneleven.bookmystay.booking.*;
 import com.seveneleven.bookmystay.inventory.*;
 import com.seveneleven.bookmystay.roomsearch.*;
 public class Main{
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         RoomInventory inventory = new RoomInventory();
+        BookingQueueService bookingService=new BookingQueueService();
         System.out.println("Room Inventory");
         System.out.print("\nEnter count for Single rooms: ");
         int singleCount = sc.nextInt();
@@ -19,8 +21,7 @@ public class Main{
         double singlePrice = sc.nextDouble();
         System.out.print("Enter number of amenities for Single room: ");
         int singleAmenityCount = sc.nextInt();
-        sc.nextLine(); // consume newline
-
+        sc.nextLine(); 
         List<String> singleAmenities = new ArrayList<>();
         for (int i = 0; i < singleAmenityCount; i++) {
             System.out.print("Enter amenity " + (i+1) + ": ");
@@ -66,7 +67,9 @@ public class Main{
             System.out.println("3.Update Room Price (Admin)");
             System.out.println("4.Search Available Rooms (Guest)");
             System.out.println("5.Check Specific Room Availability (Guest)");
-            System.out.println("6.Exit");
+            System.out.println("6.Add Booking Request (Guest)");
+            System.out.println("7.Process All Bookings");
+            System.out.println("8.Exit");
             System.out.print("Enter your choice:");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -101,6 +104,16 @@ public class Main{
                     }
                 }
                 case 6 -> {
+                    System.out.print("Enter guest name: ");
+                    String guestName = sc.nextLine();
+                    System.out.print("Enter room type (Single/Double/Suite): ");
+                    String roomType = sc.nextLine();
+                    Reservation reservation = new Reservation(guestName, roomType);
+                    
+                    bookingService.addBookingRequest(reservation);
+                }
+                case 7 -> bookingService.processBookings();
+                case 8 -> {
                     System.out.println("Exiting");
                     flag = false;
                 }
