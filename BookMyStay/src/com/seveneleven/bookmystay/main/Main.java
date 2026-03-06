@@ -61,7 +61,7 @@ public class Main{
                     inventory.updateRoomPrice(typePrice, newPrice);
                 }
                 case 4 -> {
-                    System.out.println("Exiting system... Goodbye!");
+                    System.out.println("Exiting");
                     flag = false;
                 }
                 default -> System.out.println("Invalid choice. Please try again.");
