@@ -19,7 +19,7 @@ public class Main{
         double singlePrice = sc.nextDouble();
         System.out.print("Enter number of amenities for Single room: ");
         int singleAmenityCount = sc.nextInt();
-        sc.nextLine(); // consume newline
+        sc.nextLine();
 
         List<String> singleAmenities = new ArrayList<>();
         for (int i = 0; i < singleAmenityCount; i++) {
