@@ -1,19 +1,22 @@
-// Use Case-03: Booking Request (First-Come-First-Served)
-// Accept booking requests
-// Enforce arrival order and give a gap of 2500ms between each booking
+// Use Case-04: Reservation Confirmation & Room Allocation
+// Dequeue booking requests, assign unique room IDs, prevent duplicates
+// Update inventory immediately to avoid double-booking
 // @author Developer
-// @version 3.0
+// @version 4.0
 package com.seveneleven.bookmystay.main;
 import java.util.*;
 
 import com.seveneleven.bookmystay.booking.*;
 import com.seveneleven.bookmystay.inventory.*;
 import com.seveneleven.bookmystay.roomsearch.*;
+
 public class Main{
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         RoomInventory inventory = new RoomInventory();
-        BookingQueueService bookingService=new BookingQueueService();
+        BookingQueueService bookingService = new BookingQueueService();
+        ReservationAllocator allocator = new ReservationAllocator(inventory);
+
         System.out.println("Room Inventory");
         System.out.print("\nEnter count for Single rooms: ");
         int singleCount = sc.nextInt();
@@ -57,7 +60,6 @@ public class Main{
         }
         inventory.addRoomType("Suite", suiteCount, suitePrice, suiteAmenities);
 
-
         Search searchService = new Search(inventory);
         boolean flag = true;
         while (flag) {
@@ -68,8 +70,9 @@ public class Main{
             System.out.println("4.Search Available Rooms (Guest)");
             System.out.println("5.Check Specific Room Availability (Guest)");
             System.out.println("6.Add Booking Request (Guest)");
-            System.out.println("7.Process All Bookings");
-            System.out.println("8.Exit");
+            System.out.println("7.Process All Bookings & Allocate Rooms");
+            System.out.println("8.Show Current Allocations");
+            System.out.println("9.Exit");
             System.out.print("Enter your choice:");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -109,11 +112,11 @@ public class Main{
                     System.out.print("Enter room type (Single/Double/Suite): ");
                     String roomType = sc.nextLine();
                     Reservation reservation = new Reservation(guestName, roomType);
-                    
                     bookingService.addBookingRequest(reservation);
                 }
-                case 7 -> bookingService.processBookings();
-                case 8 -> {
+                case 7 -> bookingService.processBookings(allocator); // UC3 + UC4 combined
+                case 8 -> allocator.showAllocations();
+                case 9 -> {
                     System.out.println("Exiting");
                     flag = false;
                 }

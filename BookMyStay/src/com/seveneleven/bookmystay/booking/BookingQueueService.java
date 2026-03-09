@@ -11,16 +11,17 @@ public class BookingQueueService {
         System.out.println("Booking request added: " + reservation);
     }
     
-    public void processBookings() {
+    public void processBookings(ReservationAllocator allocator) {
         while (!bookingQueue.isEmpty()) {
             Reservation current = bookingQueue.poll();
             System.out.println("Processing: " + current);
             try {
-				Thread.sleep(2500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-            System.out.println("Completed booking for: " + current.getGuestName());
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            allocator.confirmReservation(current);
         }
     }
+
 }
