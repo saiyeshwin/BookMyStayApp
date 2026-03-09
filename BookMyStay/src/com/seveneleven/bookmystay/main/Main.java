@@ -1,22 +1,23 @@
-// Use Case-05: Add-On Service Selection
-// Attach optional services (breakfast, spa, pickup) to reservations
-// Allow multiple services per booking and calculate additional cost
+// Use Case-06: Booking History & Reporting
+// Store confirmed reservations, support cancellation & review, generate reports
+// Maintain complete booking history for audit and customer support
 // @author Developer
-// @version 5.0
+// @version 6.0
 package com.seveneleven.bookmystay.main;
 import java.util.*;
-
 import com.seveneleven.bookmystay.booking.*;
 import com.seveneleven.bookmystay.inventory.*;
 import com.seveneleven.bookmystay.roomsearch.*;
-
 public class Main{
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         RoomInventory inventory = new RoomInventory();
         BookingQueueService bookingService = new BookingQueueService();
-        ReservationAllocator allocator = new ReservationAllocator(inventory);
         ServiceManager serviceManager = new ServiceManager();
+        BookingHistory history = new BookingHistory();
+        ReservationAllocator allocator = new ReservationAllocator(inventory, history);
+        bookingService.processBookings(allocator);
+
 
         System.out.println("Room Inventory");
         System.out.print("\nEnter count for Single rooms: ");
@@ -76,7 +77,10 @@ public class Main{
             System.out.println("9.Add Service to Reservation");
             System.out.println("10.Show Services for Reservation");
             System.out.println("11.Calculate Service Cost");
-            System.out.println("12.Exit");
+            System.out.println("12.Show Booking History");
+            System.out.println("13.Cancel Reservation");
+            System.out.println("14.Total Reservations Report");
+            System.out.println("15.Exit");
             System.out.print("Enter your choice:");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -119,6 +123,7 @@ public class Main{
                     bookingService.addBookingRequest(reservation);
                 }
                 case 7 -> bookingService.processBookings(allocator);
+
                 case 8 -> allocator.showAllocations();
                 case 9 -> {
                     System.out.print("Enter Reservation ID: ");
@@ -142,7 +147,18 @@ public class Main{
                     double total = serviceManager.calculateServiceCost(resId);
                     System.out.println("Total Service Cost for " + resId + ": ₹" + total);
                 }
-                case 12 -> {
+                case 12 -> history.showHistory();
+                case 13 -> {
+                    System.out.print("Enter guest name to cancel: ");
+                    String guestName = sc.nextLine();
+                    System.out.print("Enter room type: ");
+                    String roomType = sc.nextLine();
+                    history.cancelReservation(guestName, roomType);
+                }
+                case 14 -> {
+                    System.out.println("Total Reservations: " + history.getTotalReservations());
+                }
+                case 15 -> {
                     System.out.println("Exiting");
                     flag = false;
                 }
