@@ -1,8 +1,8 @@
-// Use Case-04: Reservation Confirmation & Room Allocation
-// Dequeue booking requests, assign unique room IDs, prevent duplicates
-// Update inventory immediately to avoid double-booking
+// Use Case-05: Add-On Service Selection
+// Attach optional services (breakfast, spa, pickup) to reservations
+// Allow multiple services per booking and calculate additional cost
 // @author Developer
-// @version 4.0
+// @version 5.0
 package com.seveneleven.bookmystay.main;
 import java.util.*;
 
@@ -16,6 +16,7 @@ public class Main{
         RoomInventory inventory = new RoomInventory();
         BookingQueueService bookingService = new BookingQueueService();
         ReservationAllocator allocator = new ReservationAllocator(inventory);
+        ServiceManager serviceManager = new ServiceManager();
 
         System.out.println("Room Inventory");
         System.out.print("\nEnter count for Single rooms: ");
@@ -72,7 +73,10 @@ public class Main{
             System.out.println("6.Add Booking Request (Guest)");
             System.out.println("7.Process All Bookings & Allocate Rooms");
             System.out.println("8.Show Current Allocations");
-            System.out.println("9.Exit");
+            System.out.println("9.Add Service to Reservation");
+            System.out.println("10.Show Services for Reservation");
+            System.out.println("11.Calculate Service Cost");
+            System.out.println("12.Exit");
             System.out.print("Enter your choice:");
             int choice = sc.nextInt();
             sc.nextLine();
@@ -114,9 +118,31 @@ public class Main{
                     Reservation reservation = new Reservation(guestName, roomType);
                     bookingService.addBookingRequest(reservation);
                 }
-                case 7 -> bookingService.processBookings(allocator); // UC3 + UC4 combined
+                case 7 -> bookingService.processBookings(allocator);
                 case 8 -> allocator.showAllocations();
                 case 9 -> {
+                    System.out.print("Enter Reservation ID: ");
+                    String resId = sc.nextLine();
+                    System.out.print("Enter service name (Breakfast/Spa/Pickup): ");
+                    String serviceName = sc.nextLine();
+                    System.out.print("Enter service cost: ");
+                    double serviceCost = sc.nextDouble();
+                    sc.nextLine();
+                    Service service = new Service(serviceName, serviceCost);
+                    serviceManager.addService(resId, service);
+                }
+                case 10 -> {
+                    System.out.print("Enter Reservation ID: ");
+                    String resId = sc.nextLine();
+                    serviceManager.showServices(resId);
+                }
+                case 11 -> {
+                    System.out.print("Enter Reservation ID: ");
+                    String resId = sc.nextLine();
+                    double total = serviceManager.calculateServiceCost(resId);
+                    System.out.println("Total Service Cost for " + resId + ": ₹" + total);
+                }
+                case 12 -> {
                     System.out.println("Exiting");
                     flag = false;
                 }
