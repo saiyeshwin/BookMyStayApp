@@ -29,5 +29,3 @@
   - Support cancellation
   - Generate booking history reports
   - Count total reservations
-
-## 🏗️ Project Structure
